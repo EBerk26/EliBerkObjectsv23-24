@@ -64,8 +64,7 @@ public class BasicGameApp implements Runnable {
       //variable and objects
       //create (construct) the objects needed for the game and load up 
 		astroPic = Toolkit.getDefaultToolkit().getImage("astronaut.png"); //load the picture
-		astro = new Astronaut(600,100);
-
+		astro = new Astronaut(Astronaut.RandInt(0,940),Astronaut.RandInt(0,640));
 
 	}// BasicGameApp()
 

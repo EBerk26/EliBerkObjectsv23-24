@@ -4,6 +4,9 @@ import java.awt.*;
  * Created by chales on 11/6/2017.
  */
 public class Astronaut {
+   public static int RandInt(int LowerBound, int UpperBound){
+        return(int)(Math.random()*(UpperBound-LowerBound+1)+LowerBound);
+    }
 
     //VARIABLE DECLARATION SECTION
     //Here's where you state which variables you are going to use.
@@ -28,8 +31,14 @@ public class Astronaut {
     public Astronaut(int pXpos, int pYpos) {
         xpos = pXpos;
         ypos = pYpos;
-        dx =-5;
-        dy =3;
+        dx =RandInt(-5,5);
+        dy =RandInt(-5,5);
+        while(dx==0){
+            dx =RandInt(-5,5);
+        }
+        while(dy==0){
+            dy =RandInt(-5,5);
+        }
         width = 60;
         height = 60;
         isAlive = true;
