@@ -39,27 +39,39 @@ public class Astronaut {
         while(dy==0){
             dy =RandInt(-5,5);
         }
-        width = 60;
-        height = 60;
+        width = RandInt(60,100);
+        height = RandInt(60,100);
         isAlive = true;
  
     } // constructor
 
     //The move method.  Everytime this is run (or "called") the hero's x position and y position change by dx and dy
     public void move() {
-        if(xpos>940||xpos<0){
-            dx=-dx;
-        }
-        if(ypos>640||ypos<0){
-            dy=-dy;
-        }
         xpos=xpos+dx;
         ypos=ypos+dy;
     }
+    public void bounce(){
+        if(xpos>1000-width||xpos<0){
+            dx=-dx;
+        }
+        if(ypos>700-height||ypos<0){
+            dy=-dy;
+        }
+        move();
+    }
+    public void wrap(){
+        if(xpos>1000){
+            xpos = -width;
+        }
+        if(xpos<-width){
+            xpos=1000;
+        }
+        if(ypos>700){
+            ypos = -height;
+        }
+        if(ypos<-height){
+            ypos=700;
+        }
+        move();
+    }
 }
-
-
-
-
-
-

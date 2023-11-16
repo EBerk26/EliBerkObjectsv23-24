@@ -91,7 +91,7 @@ public class BasicGameApp implements Runnable {
 	public void moveThings()
 	{
       //calls the move( ) code in the objects
-		astro.move();
+		astro.wrap();
 
 	}
 	
