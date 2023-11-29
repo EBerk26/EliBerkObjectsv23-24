@@ -17,6 +17,7 @@ public class Astronaut {
     public int dy;                    //the speed of the hero in the y direction
     public int width;
     public int height;
+    public Rectangle rectangle;
     public boolean isAlive;            //a boolean to denote if the hero is alive or dead.
 
 
@@ -42,6 +43,8 @@ public class Astronaut {
         width = RandInt(60,100);
         height = RandInt(60,100);
         isAlive = true;
+        rectangle = new Rectangle(xpos,ypos,width,height);
+
  
     } // constructor
 
@@ -49,6 +52,7 @@ public class Astronaut {
     public void move() {
         xpos=xpos+dx;
         ypos=ypos+dy;
+        rectangle = new Rectangle(xpos,ypos,width,height);
     }
     public void bounce(){
         if(xpos>1000-width||xpos<0){
@@ -58,6 +62,10 @@ public class Astronaut {
             dy=-dy;
         }
         move();
+    }
+    public void staticbounce(){
+        dx=-dx;
+        dy=-dy;
     }
     public void wrap(){
         if(xpos>1000){
