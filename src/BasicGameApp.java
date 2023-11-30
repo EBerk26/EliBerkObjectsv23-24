@@ -17,17 +17,14 @@ import java.awt.image.BufferStrategy;
 import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-
 //*******************************************************************************
 // Class Definition Section
 
 public class BasicGameApp implements Runnable {
-
-   //Variable Definition Section
+	//Variable Definition Section
    //Declare the variables used in the program 
    //You can set their initial values too
-   
+
    //Sets the width and height of the program window
 	final int WIDTH = 1000;
 	final int HEIGHT = 700;
@@ -40,11 +37,20 @@ public class BasicGameApp implements Runnable {
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
 	public Image background;
+	public Image explosion;
 
    //Declare the objects used in the program
    //These are things that are made up of more than one variable type
 	private Astronaut astro;
 	private Astronaut astro2;
+	public boolean createExplosion;
+	public int ExplosionXpos;
+	public int ExplosionYpos;
+
+	public int explosionSize;
+	public int explosionFrame = 0;
+	public int explosiontime = 100;
+	public int maxexplosionsize = 150;
 
 
    // Main method definition
@@ -67,6 +73,7 @@ public class BasicGameApp implements Runnable {
       //create (construct) the objects needed for the game and load up 
 		astroPic = Toolkit.getDefaultToolkit().getImage("astronaut.png"); //load the picture
 		background = Toolkit.getDefaultToolkit().getImage("space.png");
+		explosion = Toolkit.getDefaultToolkit().getImage("Explosion.png");
 		astro = new Astronaut(Astronaut.RandInt(0,940),Astronaut.RandInt(0,640));
 		astro2 = new Astronaut(Astronaut.RandInt(0,940),Astronaut.RandInt(0,640));
 	}// BasicGameApp()
@@ -85,6 +92,14 @@ public class BasicGameApp implements Runnable {
 		while (true) {
 
          moveThings();  //move all the game objects
+		 if(createExplosion){
+			 explosionFrame++;
+			 explosionSize = (int)(-maxexplosionsize/Math.pow((explosiontime/2),2)*Math.pow(explosionFrame-explosiontime/2,2)+maxexplosionsize);
+			 if(explosionFrame == explosiontime){
+				 createExplosion = false;
+				 explosionFrame = 0;
+			 }
+		 }
          render();  // paint the graphics
          pause(10); // sleep for 10 ms
 		}
@@ -100,6 +115,9 @@ public class BasicGameApp implements Runnable {
 			astro.staticbounce();
 			astro2.staticbounce();
 			System.out.println("Crash!");
+			createExplosion = true;
+			ExplosionXpos = (astro.xpos+astro.width/2+astro2.xpos+astro2.width/2)/2;
+			ExplosionYpos = (astro.ypos+astro.height/2+astro2.ypos+astro2.height/2)/2;
 		}
 
 	}
@@ -151,6 +169,9 @@ public class BasicGameApp implements Runnable {
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 
 		g.drawImage(background,0,0,WIDTH,HEIGHT,null);
+		if(createExplosion){
+			g.drawImage(explosion,ExplosionXpos-explosionSize/2,ExplosionYpos-explosionSize/2,explosionSize,explosionSize,null);
+		}
       //draw the image of the astronaut
 		g.drawImage(astroPic, astro.xpos, astro.ypos, astro.width, astro.height, null);
 		g.drawImage(astroPic,astro2.xpos,astro2.ypos,astro2.width,astro2.height,null);
