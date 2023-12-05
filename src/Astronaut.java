@@ -21,6 +21,7 @@ public class Astronaut {
     public boolean isAlive;            //a boolean to denote if the hero is alive or dead.
 
 
+
     // METHOD DEFINITION SECTION
 
     // Constructor Definition
@@ -66,6 +67,10 @@ public class Astronaut {
     public void staticbounce(){
         dx=-dx;
         dy=-dy;
+    }
+    public void expand(){
+        width = width+10;
+        height = height+10;
     }
     public void wrap(){
         if(xpos>1000){

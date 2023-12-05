@@ -15,6 +15,7 @@
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 //*******************************************************************************
@@ -27,13 +28,13 @@ public class BasicGameApp implements Runnable {
 
    //Sets the width and height of the program window
 	final int WIDTH = 1000;
+	public String collisionType;
 	final int HEIGHT = 700;
 
    //Declare the variables needed for the graphics
 	public JFrame frame;
 	public Canvas canvas;
    public JPanel panel;
-   
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
 	public Image background;
@@ -52,6 +53,8 @@ public class BasicGameApp implements Runnable {
 	public int explosiontime = 100;
 	public int maxexplosionsize = 150;
 
+	public boolean isCrashing = false;
+
 
    // Main method definition
    // This is the code that runs first and automatically
@@ -66,7 +69,6 @@ public class BasicGameApp implements Runnable {
    // This section is the setup portion of the program
    // Initialize your variables and construct your program objects here.
 	public BasicGameApp() {
-      
       setUpGraphics();
        
       //variable and objects
@@ -87,7 +89,6 @@ public class BasicGameApp implements Runnable {
    // main thread
    // this is the code that plays the game after you set things up
 	public void run() {
-
       //for the moment we will loop things forever.
 		while (true) {
 
@@ -111,13 +112,19 @@ public class BasicGameApp implements Runnable {
       //calls the move( ) code in the objects
 		astro.bounce();
 		astro2.wrap();
-		if(astro.rectangle.intersects(astro2.rectangle)){
+		if(astro.rectangle.intersects(astro2.rectangle)&&!isCrashing){
+			isCrashing = true;
 			astro.staticbounce();
 			astro2.staticbounce();
+ 			astro.expand();
+			astro2.expand();
 			System.out.println("Crash!");
 			createExplosion = true;
 			ExplosionXpos = (astro.xpos+astro.width/2+astro2.xpos+astro2.width/2)/2;
 			ExplosionYpos = (astro.ypos+astro.height/2+astro2.ypos+astro2.height/2)/2;
+		}
+		if(!astro.rectangle.intersects(astro2.rectangle)){
+			isCrashing = false;
 		}
 
 	}
