@@ -10,9 +10,8 @@ public class Astronaut {
 
     //VARIABLE DECLARATION SECTION
     //Here's where you state which variables you are going to use.
-    public String name;                //holds the name of the hero
-    public int xpos;                //the x position
-    public int ypos;                //the y position
+    public double xpos;                //the x position
+    public double ypos;                //the y position
     public int dx;                    //the speed of the hero in the x direction
     public int dy;                    //the speed of the hero in the y direction
     public int width;
@@ -44,7 +43,7 @@ public class Astronaut {
         width = RandInt(60,100);
         height = RandInt(60,100);
         isAlive = true;
-        rectangle = new Rectangle(xpos,ypos,width,height);
+        rectangle = new Rectangle((int)xpos,(int)ypos,width,height);
 
  
     } // constructor
@@ -53,7 +52,7 @@ public class Astronaut {
     public void move() {
         xpos=xpos+dx;
         ypos=ypos+dy;
-        rectangle = new Rectangle(xpos,ypos,width,height);
+        rectangle = new Rectangle((int)xpos,(int)ypos,width,height);
     }
     public void bounce(){
         if(xpos>1000-width||xpos<0){
@@ -86,5 +85,21 @@ public class Astronaut {
             ypos=700;
         }
         move();
+    }
+    public void randomteleport(){
+        xpos = RandInt(5,1000-width);
+        ypos = RandInt(5,700-width);
+    }
+    public void speedup(){
+        if(dx<0){
+            dx -=1;
+        } else if (dx>0){
+            dx +=1;
+        }
+        if (dy<0){
+            dy-=1;
+        } else if (dy>0){
+            dy+=1;
+        }
     }
 }
