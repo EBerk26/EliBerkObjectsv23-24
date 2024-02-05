@@ -12,12 +12,24 @@ public class Astronaut {
     //Here's where you state which variables you are going to use.
     public double xpos;                //the x position
     public double ypos;                //the y position
-    public int dx;                    //the speed of the hero in the x direction
-    public int dy;                    //the speed of the hero in the y direction
+    public double dx;                    //the speed of the hero in the x direction
+    public double dy;                    //the speed of the hero in the y direction
     public int width;
     public int height;
     public Rectangle rectangle;
-    public boolean isAlive;            //a boolean to denote if the hero is alive or dead.
+    public boolean isAlive;
+
+    public boolean leftIsPressed;
+    public boolean rightIsPressed;
+    public boolean upIsPressed;
+    public boolean downIsPressed;
+    public boolean spaceIsPressed;
+
+
+
+
+
+    //a boolean to denote if the hero is alive or dead.
 
 
 
@@ -71,7 +83,7 @@ public class Astronaut {
         width = width+10;
         height = height+10;
     }
-    public void wrap(){
+    public void staticwrap(){
         if(xpos>1000){
             xpos = -width;
         }
@@ -84,11 +96,57 @@ public class Astronaut {
         if(ypos<-height){
             ypos=700;
         }
+    }
+    public void wrap(){
+        staticwrap();
         move();
     }
     public void randomteleport(){
         xpos = RandInt(5,1000-width);
         ypos = RandInt(5,700-width);
+    }
+    public void playerMovement(){
+        if(leftIsPressed&&!upIsPressed&&!downIsPressed){
+            xpos-=5;
+        }
+        if(rightIsPressed&&!upIsPressed&&!downIsPressed){
+            xpos+=5;
+        }
+        if(upIsPressed&&!rightIsPressed&&!leftIsPressed){
+            ypos-=5;
+        }
+        if(downIsPressed&&!rightIsPressed&&!leftIsPressed){
+            ypos+=5;
+        }
+        if(leftIsPressed&&upIsPressed&&!rightIsPressed&&!downIsPressed){
+            xpos-=Math.sqrt(12.5);
+            ypos-=Math.sqrt(12.5);
+        }
+        if(leftIsPressed&&downIsPressed&&!rightIsPressed&&!upIsPressed){
+            xpos-=Math.sqrt(12.5);
+            ypos+=Math.sqrt(12.5);
+        }
+        if(rightIsPressed&&downIsPressed&&!leftIsPressed&&!upIsPressed){
+            xpos+=Math.sqrt(12.5);
+            ypos+=Math.sqrt(12.5);
+        }
+        if(rightIsPressed&&upIsPressed&&!leftIsPressed&&!downIsPressed){
+            xpos+=Math.sqrt(12.5);
+            ypos-=Math.sqrt(12.5);
+        }
+        if(upIsPressed&&leftIsPressed&&rightIsPressed){
+            ypos-=5;
+        }
+        if(downIsPressed&&leftIsPressed&&rightIsPressed){
+            ypos+=5;
+        }
+        if(rightIsPressed&&upIsPressed&&downIsPressed){
+            xpos+=5;
+        }
+        if(leftIsPressed&&upIsPressed&&downIsPressed){
+            xpos-=5;
+        }
+        staticwrap();
     }
     public void speedup(){
         if(dx<0){

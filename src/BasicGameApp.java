@@ -34,12 +34,13 @@ public class BasicGameApp implements Runnable, KeyListener {
    //Declare the variables needed for the graphics
 	public JFrame frame;
 	public Canvas canvas;
-   public JPanel panel;
+    public JPanel panel;
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
 	public Image background;
 	public Image explosion;
 	public Image purpleAstroPic;
+	int numberOfBonusAstronauts = 10; //the amount of astronauts after the first four (this just adds more white ones that bounce off walls)
 
    //Declare the objects used in the program
    //These are things that are made up of more than one variable type
@@ -47,6 +48,7 @@ public class BasicGameApp implements Runnable, KeyListener {
 	private Astronaut astro2;
 	private Astronaut astro3;
 	private Astronaut player;
+	public Astronaut[] AstronautArray = new Astronaut[numberOfBonusAstronauts];
 	public boolean createExplosion;
 	public int ExplosionXpos;
 	public int ExplosionYpos;
@@ -86,6 +88,9 @@ public class BasicGameApp implements Runnable, KeyListener {
 		astro2 = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
 		astro3 = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
 		player = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
+		for(int x =0; x<=numberOfBonusAstronauts-1; x++){
+			AstronautArray[x] = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
+		}
 	}// BasicGameApp()
 
    
@@ -121,51 +126,19 @@ public class BasicGameApp implements Runnable, KeyListener {
 		astro.bounce();
 		astro2.wrap();
 		astro3.bounce();
-		if(spaceIsPressed){
+		for(int x =0;x<=numberOfBonusAstronauts-1;x++){
+			AstronautArray[x].bounce();
+		}
+		if(player.spaceIsPressed){
 			astro.bounce();
 			astro2.wrap();
 			astro3.bounce();
+			for(int x =0;x<=numberOfBonusAstronauts-1;x++){
+				AstronautArray[x].bounce();
+			}
 		}
-		if(leftIsPressed&&!upIsPressed&&!downIsPressed){
-			player.xpos-=5;
-		}
-		if(rightIsPressed&&!upIsPressed&&!downIsPressed){
-			player.xpos+=5;
-		}
-		if(upIsPressed&&!rightIsPressed&&!leftIsPressed){
-			player.ypos-=5;
-		}
-		if(downIsPressed&&!rightIsPressed&&!leftIsPressed){
-			player.ypos+=5;
-		}
-		if(leftIsPressed&&upIsPressed&&!rightIsPressed&&!downIsPressed){
-			player.xpos-=Math.sqrt(12.5);
-			player.ypos-=Math.sqrt(12.5);
-		}
-		if(leftIsPressed&&downIsPressed&&!rightIsPressed&&!upIsPressed){
-			player.xpos-=Math.sqrt(12.5);
-			player.ypos+=Math.sqrt(12.5);
-		}
-		if(rightIsPressed&&downIsPressed&&!leftIsPressed&&!upIsPressed){
-			player.xpos+=Math.sqrt(12.5);
-			player.ypos+=Math.sqrt(12.5);
-		}
-		if(rightIsPressed&&upIsPressed&&!leftIsPressed&&!downIsPressed){
-			player.xpos+=Math.sqrt(12.5);
-			player.ypos-=Math.sqrt(12.5);
-		}
-		if(upIsPressed&&leftIsPressed&&rightIsPressed){
-			player.ypos-=5;
-		}
-		if(downIsPressed&&leftIsPressed&&rightIsPressed){
-			player.ypos+=5;
-		}
-		if(rightIsPressed&&upIsPressed&&downIsPressed){
-			player.xpos+=5;
-		}
-		if(leftIsPressed&&upIsPressed&&downIsPressed){
-			player.xpos-=5;
-		}
+		player.playerMovement();
+
 		if(astro3.rectangle.intersects(astro.rectangle)){
 			astro3.randomteleport();
 			astro.randomteleport();
@@ -232,8 +205,6 @@ public class BasicGameApp implements Runnable, KeyListener {
       canvas.createBufferStrategy(2);
       bufferStrategy = canvas.getBufferStrategy();
       canvas.requestFocus();
-      System.out.println("DONE graphic setup");
-   
    }
 
 
@@ -251,53 +222,51 @@ public class BasicGameApp implements Runnable, KeyListener {
 		g.drawImage(astroPic,(int)astro2.xpos,(int)astro2.ypos,astro2.width,astro2.height,null);
 		g.drawImage(purpleAstroPic,(int)astro3.xpos,(int)astro3.ypos,astro3.width,astro3.height,null);
 		g.drawImage(greenAstroPic,(int)player.xpos,(int)player.ypos,astro3.width,astro3.height,null);
-
+		for(int x =0;x<=numberOfBonusAstronauts-1;x++){
+			g.drawImage(astroPic,(int)AstronautArray[x].xpos,(int)AstronautArray[x].ypos,AstronautArray[x].width,AstronautArray[x].height,null);
+		}
 		g.dispose();
 
 		bufferStrategy.show();
 	}
-	boolean spaceIsPressed;
-	boolean leftIsPressed;
-	boolean rightIsPressed;
-	boolean upIsPressed;
-	boolean downIsPressed;
+
 	public void keyTyped(KeyEvent e) {
 
 	}
 
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode()==KeyEvent.VK_SPACE){
-			spaceIsPressed = true;
+			player.spaceIsPressed = true;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_LEFT){
-			leftIsPressed = true;
+			player.leftIsPressed = true;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-			rightIsPressed = true;
+			player.rightIsPressed = true;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_UP){
-			upIsPressed = true;
+			player.upIsPressed = true;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_DOWN){
-			downIsPressed = true;
+			player.downIsPressed = true;
 		}
 	}
 
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode()==KeyEvent.VK_SPACE){
-			spaceIsPressed = false;
+			player.spaceIsPressed = false;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_LEFT){
-			leftIsPressed = false;
+			player.leftIsPressed = false;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-			rightIsPressed = false;
+			player.rightIsPressed = false;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_UP){
-			upIsPressed = false;
+			player.upIsPressed = false;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_DOWN){
-			downIsPressed = false;
+			player.downIsPressed = false;
 		}
 	}
 }
