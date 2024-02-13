@@ -37,10 +37,11 @@ public class BasicGameApp implements Runnable, KeyListener {
     public JPanel panel;
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
+	int numberOfBonusAstronauts = 10; //the amount of astronauts after the first four (this just adds more white ones that bounce off walls)
+	Boolean[] arrayAlreadyColliding = new Boolean[numberOfBonusAstronauts];
 	public Image background;
 	public Image explosion;
 	public Image purpleAstroPic;
-	int numberOfBonusAstronauts = 10; //the amount of astronauts after the first four (this just adds more white ones that bounce off walls)
 
    //Declare the objects used in the program
    //These are things that are made up of more than one variable type
@@ -126,8 +127,31 @@ public class BasicGameApp implements Runnable, KeyListener {
 		astro.bounce();
 		astro2.wrap();
 		astro3.bounce();
+		for(int x =0;x<arrayAlreadyColliding.length;x++){
+			arrayAlreadyColliding[x] = false;
+		}
 		for(int x =0;x<=numberOfBonusAstronauts-1;x++){
 			AstronautArray[x].bounce();
+			if(AstronautArray[x].rectangle.intersects(astro.rectangle)){
+				AstronautArray[x].staticbounce();
+				astro.staticbounce();
+			}
+			if(AstronautArray[x].rectangle.intersects(astro2.rectangle)){
+				AstronautArray[x].staticbounce();
+				astro2.staticbounce();
+			}
+			if(AstronautArray[x].rectangle.intersects(astro3.rectangle)){
+				AstronautArray[x].staticbounce();
+				astro3.staticbounce();
+			}
+			for(int y = 0; y<= numberOfBonusAstronauts-1;y++) {
+				if (AstronautArray[x].rectangle.intersects(AstronautArray[y].rectangle)&&!arrayAlreadyColliding[x]&&!arrayAlreadyColliding[y]) {
+					AstronautArray[x].staticbounce();
+					arrayAlreadyColliding[x] = true;
+					AstronautArray[y].staticbounce();
+					arrayAlreadyColliding[y] = true;
+				}
+			}
 		}
 		if(player.spaceIsPressed){
 			astro.bounce();
@@ -221,10 +245,10 @@ public class BasicGameApp implements Runnable, KeyListener {
 		g.drawImage(astroPic, (int)astro.xpos, (int)astro.ypos, astro.width, astro.height, null);
 		g.drawImage(astroPic,(int)astro2.xpos,(int)astro2.ypos,astro2.width,astro2.height,null);
 		g.drawImage(purpleAstroPic,(int)astro3.xpos,(int)astro3.ypos,astro3.width,astro3.height,null);
-		g.drawImage(greenAstroPic,(int)player.xpos,(int)player.ypos,astro3.width,astro3.height,null);
 		for(int x =0;x<=numberOfBonusAstronauts-1;x++){
 			g.drawImage(astroPic,(int)AstronautArray[x].xpos,(int)AstronautArray[x].ypos,AstronautArray[x].width,AstronautArray[x].height,null);
 		}
+		g.drawImage(greenAstroPic,(int)player.xpos,(int)player.ypos,astro3.width,astro3.height,null);
 		g.dispose();
 
 		bufferStrategy.show();
