@@ -38,7 +38,6 @@ public class BasicGameApp implements Runnable, KeyListener {
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
 	int numberOfBonusAstronauts = 10; //the amount of astronauts after the first four (this just adds more white ones that bounce off walls)
-	Boolean[] arrayAlreadyColliding = new Boolean[numberOfBonusAstronauts];
 	public Image background;
 	public Image explosion;
 	public Image purpleAstroPic;
@@ -50,6 +49,7 @@ public class BasicGameApp implements Runnable, KeyListener {
 	private Astronaut astro3;
 	private Astronaut player;
 	public Astronaut[] AstronautArray = new Astronaut[numberOfBonusAstronauts];
+	Boolean[] isBouncingArray = new Boolean[numberOfBonusAstronauts]; //defaults to false
 	public boolean createExplosion;
 	public int ExplosionXpos;
 	public int ExplosionYpos;
@@ -85,9 +85,10 @@ public class BasicGameApp implements Runnable, KeyListener {
 		background = Toolkit.getDefaultToolkit().getImage("space.png");
 		explosion = Toolkit.getDefaultToolkit().getImage("Explosion.png");
 		greenAstroPic = Toolkit.getDefaultToolkit().getImage("Green Astronaut.png");
-		astro = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
-		astro2 = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
-		astro3 = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
+		astro = new Astronaut(2000,Astronaut.RandInt(0,600));
+		astro2 = new Astronaut(2000,Astronaut.RandInt(0,600));
+		astro3 = new Astronaut(2000,Astronaut.RandInt(0,600));
+		//all of these astros are sent off the screen to make sure my array astronauts bounce off of each other.
 		player = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
 		for(int x =0; x<=numberOfBonusAstronauts-1; x++){
 			AstronautArray[x] = new Astronaut(Astronaut.RandInt(0,900),Astronaut.RandInt(0,600));
@@ -124,14 +125,23 @@ public class BasicGameApp implements Runnable, KeyListener {
 	public void moveThings()
 	{
       //calls the move( ) code in the objects
-		astro.bounce();
+		/*astro.bounce();
 		astro2.wrap();
-		astro3.bounce();
-		for(int x =0;x<arrayAlreadyColliding.length;x++){
-			arrayAlreadyColliding[x] = false;
-		}
-		for(int x =0;x<=numberOfBonusAstronauts-1;x++){
+		astro3.bounce();*/ //it causes problems when these move - they'll get stuck much more often bouncing against the array.
+		for(int x =0;x<=numberOfBonusAstronauts-1;x++) {
 			AstronautArray[x].bounce();
+		}
+		if(player.spaceIsPressed){
+			astro.bounce();
+			astro2.wrap();
+			astro3.bounce();
+			for(int x =0;x<=numberOfBonusAstronauts-1;x++){
+				AstronautArray[x].bounce();
+			}
+		}
+		player.playerMovement();
+
+		for(int x = 0; x< AstronautArray.length;x++){
 			if(AstronautArray[x].rectangle.intersects(astro.rectangle)){
 				AstronautArray[x].staticbounce();
 				astro.staticbounce();
@@ -144,24 +154,19 @@ public class BasicGameApp implements Runnable, KeyListener {
 				AstronautArray[x].staticbounce();
 				astro3.staticbounce();
 			}
-			for(int y = 0; y<= numberOfBonusAstronauts-1;y++) {
-				if (AstronautArray[x].rectangle.intersects(AstronautArray[y].rectangle)&&!arrayAlreadyColliding[x]&&!arrayAlreadyColliding[y]) {
+		}
+		for(int x = 0;x<AstronautArray.length;x++){
+			for(int y = x+1;y<AstronautArray.length;y++){
+				if(AstronautArray[x].rectangle.intersects(AstronautArray[y].rectangle)){
 					AstronautArray[x].staticbounce();
-					arrayAlreadyColliding[x] = true;
 					AstronautArray[y].staticbounce();
-					arrayAlreadyColliding[y] = true;
+					while(AstronautArray[x].rectangle.intersects(AstronautArray[y].rectangle)){
+						AstronautArray[x].bounce();
+						AstronautArray[y].bounce();
+					}
 				}
 			}
 		}
-		if(player.spaceIsPressed){
-			astro.bounce();
-			astro2.wrap();
-			astro3.bounce();
-			for(int x =0;x<=numberOfBonusAstronauts-1;x++){
-				AstronautArray[x].bounce();
-			}
-		}
-		player.playerMovement();
 
 		if(astro3.rectangle.intersects(astro.rectangle)){
 			astro3.randomteleport();
